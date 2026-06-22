@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title"><div><span class="badge">Servicos</span><h1>Servicos do aluno</h1></div></div>
+<section class="panel">
+  <div class="section-head" style="margin-top:0"><div><span class="badge">Ativos</span><h2>Contratados</h2></div></div>
+  <div class="grid">
+    <section class="card"><h3>Personal</h3><p>{{ profile.personal.name if profile.personal else 'Nao contratado' }}</p></section>
+    <section class="card"><h3>Nutricionista</h3><p>{{ profile.nutritionist.name if profile.nutritionist else 'Nao contratado' }}</p></section>
+    <section class="card"><h3>Fisioterapeuta</h3><p>{{ profile.physiotherapist.name if profile.physiotherapist else 'Nao contratado' }}</p></section>
+    {% for s in profile.services %}<section class="card"><h3>{{ s.name }}</h3><p>{{ s.description }}</p></section>{% endfor %}
+  </div>
+</section>
+<section class="panel" style="margin-top:18px">
+  <div class="section-head" style="margin-top:0"><div><span class="badge">Solicitar</span><h2>Servicos disponiveis</h2><p>A ativacao acontece apos pagamento e confirmacao na recepcao.</p></div></div>
+  <div class="grid">
+    {% for service in available_services %}
+    <article class="card">
+      <span class="badge">{{ service.category }}</span>
+      <h3>{{ service.name }}</h3>
+      <p>{{ service.description }}</p>
+      <div class="metric">R$ {{ service.price }}</div>
+      <form method="post" action="{{ url_for('aluno.request_service', service_id=service.id) }}" class="toolbar"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button>Solicitar servico</button></form>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+<section class="panel" style="margin-top:18px">
+  <div class="section-head" style="margin-top:0"><div><span class="badge">Historico</span><h2>Solicitacoes</h2></div></div>
+  <table><tr><th>Servico</th><th>Status</th><th>Pagamento</th><th>Data</th></tr>{% for request_item in requests %}<tr><td>{{ request_item.service.name }}</td><td>{{ request_item.status }}</td><td>{% if request_item.payment %}{{ request_item.payment.status }} - R$ {{ request_item.payment.amount }}{% else %}-{% endif %}</td><td>{{ request_item.created_at }}</td></tr>{% else %}<tr><td colspan="4">Nenhuma solicitacao ainda.</td></tr>{% endfor %}</table>
+</section>
+{% endblock %}

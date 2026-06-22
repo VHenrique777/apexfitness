@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title">
+  <div>
+    <span class="badge">Fisioterapia</span>
+    <h1>PDFs enviados</h1>
+  </div>
+</div>
+
+<div class="grid">
+  {% for d in documents %}
+    <article class="card">
+      <span class="badge">{{ d.created_at.strftime("%d/%m/%Y") }}</span>
+      <h3>{{ d.title }}</h3>
+      <p>Documento enviado pelo fisioterapeuta.</p>
+      <div class="toolbar">
+        <a class="btn" href="{{ url_for('aluno.physiotherapy_pdf', document_id=d.id) }}" target="_blank">Ver PDF</a>
+        <a class="btn secondary" href="{{ url_for('aluno.physiotherapy_pdf', document_id=d.id, download=1) }}">Baixar PDF</a>
+      </div>
+    </article>
+  {% else %}
+    <p>Nenhum PDF de fisioterapia enviado.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+{% set student_rows = students if students is iterable and students is not string else [] %}
+{% set student_count = students|length if students is iterable and students is not string else students %}
+{% set delinquent_rows = delinquent_students if delinquent_students is defined else [] %}
+{% set delinquent_count = delinquent_rows|length if delinquent_rows is iterable and delinquent_rows is not string else delinquent_rows %}
+{% set employee_rows = employees if employees is defined else [] %}
+{% set employee_count = employee_rows|length if employee_rows is iterable and employee_rows is not string else employee_rows %}
+<div class="page-title">
+  <div><span class="badge">Gerente Academia</span><h1>Gestao da academia</h1></div>
+</div>
+
+<div class="grid">
+  <section class="card"><h3>Alunos</h3><div class="metric">{{ student_count }}</div><p>{{ active_students }} ativos</p></section>
+  <section class="card"><h3>Inadimplentes</h3><div class="metric">{{ delinquent_count }}</div><p>Acompanhamento de pendencias</p></section>
+  <section class="card"><h3>Funcionarios</h3><div class="metric">{{ employee_count }}</div><p>Equipe cadastrada</p></section>
+</div>
+
+<form class="panel" method="post" style="margin-top:18px">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="page-title" style="margin-bottom:8px">
+    <div><span class="badge">Criar perfil</span><h2>Novo acesso profissional</h2></div>
+  </div>
+  <div class="grid">
+    <div><label>Nome</label><input name="name" required></div>
+    <div><label>Email de login</label><input name="email" type="email" required></div>
+    <div><label>Senha</label><input name="password" required></div>
+    <div>
+      <label>Profissional</label>
+      <select name="role" required>
+        {% for role in professional_roles|default([]) %}
+          <option value="{{ role.name }}">{{ role.value }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div><label>CPF</label><input name="cpf"></div>
+    <div><label>Telefone</label><input name="phone"></div>
+    <div><label>RG</label><input name="rg"></div>
+    <div><label>Endereco</label><input name="address"></div>
+  </div>
+  <div class="toolbar"><button>Criar login de acesso</button></div>
+</form>
+
+<section class="panel" style="margin-top:18px">
+  <div class="page-title" style="margin-bottom:12px">
+    <div><span class="badge">Funcionarios</span><h2>Funcionarios cadastrados</h2></div>
+    <a class="btn" href="{{ url_for('admin.reports', kind='funcionarios') }}">Criar PDF</a>
+  </div>
+  <table>
+    <tr><th>Nome</th><th>Email</th><th>Cargo</th><th>Status</th></tr>
+    {% for employee in employee_rows %}
+      <tr><td>{{ employee.name }}</td><td>{{ employee.email }}</td><td>{{ employee.role.value }}</td><td>{{ 'Ativo' if employee.is_active else 'Inativo' }}</td></tr>
+    {% else %}
+      <tr><td colspan="4">Nenhum funcionario cadastrado.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section class="panel" style="margin-top:18px">
+  <div class="page-title" style="margin-bottom:12px">
+    <div><span class="badge">Alunos</span><h2>Alunos cadastrados</h2></div>
+    <a class="btn" href="{{ url_for('admin.reports', kind='alunos') }}">Criar PDF</a>
+  </div>
+  <table>
+    <tr><th>Nome</th><th>Email</th><th>Plano</th><th>Status</th></tr>
+    {% for student in student_rows %}
+      <tr><td>{{ student.user.name }}</td><td>{{ student.user.email }}</td><td>{{ student.plan.name if student.plan else '-' }}</td><td>{{ student.account_status }}</td></tr>
+    {% else %}
+      <tr><td colspan="4">Nenhum aluno cadastrado.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section class="panel" style="margin-top:18px">
+  <div class="page-title" style="margin-bottom:12px">
+    <div><span class="badge">Inadimplentes</span><h2>Alunos inadimplentes</h2></div>
+    <a class="btn" href="{{ url_for('admin.reports', kind='inadimplentes') }}">Criar PDF</a>
+  </div>
+  <table>
+    <tr><th>Nome</th><th>Email</th><th>Proximo pagamento</th><th>Status</th></tr>
+    {% for student in delinquent_rows %}
+      <tr><td>{{ student.user.name }}</td><td>{{ student.user.email }}</td><td>{{ student.next_payment_at }}</td><td>{{ student.account_status }}</td></tr>
+    {% else %}
+      <tr><td colspan="4">Nenhum aluno inadimplente.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

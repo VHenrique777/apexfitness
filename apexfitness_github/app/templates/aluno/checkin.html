@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block content %}<div class="page-title"><div><span class="badge">Check-in</span><h1>Entrada e saida</h1></div></div><form method="post" class="panel"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button>Registrar entrada/saida</button></form><table style="margin-top:18px"><tr><th>Entrada</th><th>Saida</th><th>QR Code</th></tr>{% for c in checks %}<tr><td>{{ c.entry_at }}</td><td>{{ c.exit_at or '-' }}</td><td>{{ c.qr_code }}</td></tr>{% endfor %}</table>{% endblock %}
+

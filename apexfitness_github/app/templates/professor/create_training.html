@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title">
+  <div>
+    <span class="badge">Treino</span>
+    <h1>Criar treino</h1>
+  </div>
+</div>
+
+<div class="grid" style="margin-bottom:18px">
+  <div class="card training-template" data-template="hipertrofia">
+    <h3>Ganho de Massa Muscular</h3>
+    <p>Treino semanal para hipertrofia, dividido por grupos musculares.</p>
+    <button type="button" class="btn secondary use-template" data-template="hipertrofia">Usar modelo</button>
+  </div>
+  <div class="card training-template" data-template="perda_gordura">
+    <h3>Perda de Gordura</h3>
+    <p>Circuitos e atividades aerobicas para reduzir gordura corporal.</p>
+    <button type="button" class="btn secondary use-template" data-template="perda_gordura">Usar modelo</button>
+  </div>
+  <div class="card training-template" data-template="resistencia">
+    <h3>Resistencia</h3>
+    <p>Series mais longas, corrida e circuitos continuos para condicionamento.</p>
+    <button type="button" class="btn secondary use-template" data-template="resistencia">Usar modelo</button>
+  </div>
+</div>
+
+<form class="panel" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="grid">
+    <div>
+      <label>Aluno</label>
+      <select name="student_id">
+        {% for s in students %}
+          <option value="{{ s.id }}">{{ s.user.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Base</label>
+      <select name="base_type" id="base_type">
+        <option value="hipertrofia">Ganho de massa</option>
+        <option value="perda_gordura">Perda de gordura</option>
+        <option value="resistencia">Resistencia</option>
+        <option value="personalizado">Personalizado</option>
+      </select>
+    </div>
+    <div>
+      <label>Titulo</label>
+      <input name="title" id="training_title" required>
+    </div>
+  </div>
+  <label>Exercicios</label>
+  <textarea name="exercises" id="training_exercises" rows="16" required></textarea>
+  <label>Observacoes</label>
+  <textarea name="observations"></textarea>
+  <div class="toolbar">
+    <button type="submit" {% if not students %}disabled{% endif %}>Gerar PDF e enviar</button>
+    {% if not students %}<span class="badge">Cadastre um aluno antes de criar treinos</span>{% endif %}
+  </div>
+</form>
+
+<script>
+  var trainingTemplates = {
+    hipertrofia: {
+      title: "Treino de Ganho de Massa Muscular (Hipertrofia)",
+      exercises: [
+        "Segunda - Peito e Triceps",
+        "Supino reto - 4x8",
+        "Supino inclinado - 4x10",
+        "Crucifixo - 3x12",
+        "Triceps pulley - 4x10",
+        "Triceps frances - 3x12",
+        "",
+        "Terca - Costas e Biceps",
+        "Puxada frontal - 4x8",
+        "Remada baixa - 4x10",
+        "Remada unilateral - 3x12",
+        "Rosca direta - 4x10",
+        "Rosca martelo - 3x12",
+        "",
+        "Quarta - Pernas",
+        "Agachamento - 4x8",
+        "Leg press - 4x10",
+        "Cadeira extensora - 3x12",
+        "Mesa flexora - 3x12",
+        "Panturrilha - 4x15",
+        "",
+        "Quinta - Ombros",
+        "Desenvolvimento - 4x8",
+        "Elevacao lateral - 4x12",
+        "Elevacao frontal - 3x12",
+        "Encolhimento - 4x12",
+        "",
+        "Sexta - Corpo Inteiro",
+        "Supino - 3x10",
+        "Remada - 3x10",
+        "Agachamento - 3x10",
+        "Desenvolvimento - 3x10",
+        "Abdominal - 3x20",
+        "",
+        "Sabado e Domingo",
+        "Descanso"
+      ].join("\n")
+    },
+    perda_gordura: {
+      title: "Treino para Perda de Gordura",
+      exercises: [
+        "Segunda",
+        "Circuito (4 voltas)",
+        "20 agachamentos",
+        "15 flexoes",
+        "20 polichinelos",
+        "30 segundos de corrida parada",
+        "30 segundos de prancha",
+        "",
+        "Terca",
+        "Caminhada rapida ou corrida leve - 40 min",
+        "",
+        "Quarta",
+        "Circuito (4 voltas)",
+        "15 afundos por perna",
+        "20 abdominais",
+        "20 polichinelos",
+        "15 flexoes",
+        "1 minuto corrida parada",
+        "",
+        "Quinta",
+        "Caminhada rapida ou bicicleta - 40 min",
+        "",
+        "Sexta",
+        "Circuito (5 voltas)",
+        "20 agachamentos",
+        "15 burpees",
+        "20 abdominais",
+        "30 segundos prancha",
+        "1 minuto corrida parada",
+        "",
+        "Sabado",
+        "Caminhada longa - 60 min",
+        "",
+        "Domingo",
+        "Descanso"
+      ].join("\n")
+    },
+    resistencia: {
+      title: "Treino para Resistencia",
+      exercises: [
+        "Segunda",
+        "Agachamento - 3x25",
+        "Flexao - 3x20",
+        "Abdominal - 3x30",
+        "Prancha - 3x1 min",
+        "",
+        "Terca",
+        "Corrida leve - 30 min",
+        "",
+        "Quarta",
+        "Agachamento - 4x20",
+        "Afundo - 4x15 por perna",
+        "Flexao - 4x15",
+        "Prancha - 4x45 s",
+        "",
+        "Quinta",
+        "Corrida ou bicicleta - 40 min",
+        "",
+        "Sexta",
+        "Circuito continuo por 30 min:",
+        "Agachamento",
+        "Flexao",
+        "Abdominal",
+        "Polichinelo",
+        "",
+        "Sabado",
+        "Corrida leve - 45 min",
+        "",
+        "Domingo",
+        "Descanso"
+      ].join("\n")
+    }
+  };
+
+  function applyTrainingTemplate(templateKey) {
+    var template = trainingTemplates[templateKey];
+    if (!template) {
+      return;
+    }
+    document.getElementById("base_type").value = templateKey;
+    document.getElementById("training_title").value = template.title;
+    document.getElementById("training_exercises").value = template.exercises;
+  }
+
+  document.getElementById("base_type").addEventListener("change", function (event) {
+    applyTrainingTemplate(event.target.value);
+  });
+
+  document.querySelectorAll(".use-template").forEach(function (button) {
+    button.addEventListener("click", function () {
+      applyTrainingTemplate(button.dataset.template);
+      document.getElementById("training_title").focus();
+    });
+  });
+
+  applyTrainingTemplate("hipertrofia");
+</script>
+{% endblock %}

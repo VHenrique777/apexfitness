@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Planos | Apex Fitness{% endblock %}
+{% block content %}
+<section class="page-hero-pro" style="--hero-image:url('https://images.unsplash.com/photo-1517963628607-235ccdd5476c?auto=format&fit=crop&w=1600&q=80')">
+  <div class="page-hero-inner">
+    <div>
+      <span class="badge">Planos</span>
+      <h1>Escolha o acesso ideal para sua rotina.</h1>
+      <p>Compare planos, beneficios e formas de pagamento para treinar com estrutura completa e acompanhamento profissional.</p>
+      <div class="hero-pill-row">
+        <span class="hero-pill">Mensal</span>
+        <span class="hero-pill">Trimestral</span>
+        <span class="hero-pill">Anual com desconto</span>
+      </div>
+    </div>
+    <div class="hero-score"><strong>{{ plans|length }}</strong><span>opcoes de acesso disponiveis</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div>
+      <span class="badge">Comparar planos</span>
+      <h2>Planos para objetivos diferentes.</h2>
+      <p>Escolha entre acesso essencial, rotina completa ou experiencia premium com mais beneficios.</p>
+    </div>
+    <a class="btn ghost" href="{{ url_for('public.contact') }}">Tirar duvidas</a>
+  </div>
+  <div class="grid">
+    {% for plan in plans %}
+    {% set plan_name = plan.name|lower %}
+    {% set plan_photo = 'https://images.unsplash.com/photo-1603077492579-39ff927823db?auto=format&fit=crop&w=800&q=80' %}
+    {% if 'basic' in plan_name %}
+      {% set plan_photo = 'https://images.unsplash.com/photo-1603077492579-39ff927823db?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'premium' in plan_name %}
+      {% set plan_photo = 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'elite' in plan_name %}
+      {% set plan_photo = 'https://images.unsplash.com/photo-1758875569399-99a7d80ace43?auto=format&fit=crop&w=800&q=80' %}
+    {% endif %}
+    <article class="card commerce-card" style="--card-image:url('{{ plan_photo }}')">
+      <div class="card-photo"></div>
+      <span class="badge">{{ plan.name }}</span>
+      <h3>{{ plan.description }}</h3>
+      <div class="price-row">
+        <div>
+          <span class="meta-chip">Mensalidade</span>
+          <div class="metric">R$ {{ plan.monthly_price }}</div>
+        </div>
+      </div>
+      <p>{{ plan.benefits.replace(';',' / ') }}</p>
+      <div class="card-meta">
+        <span class="meta-chip">Trimestral R$ {{ plan.quarterly_price }}</span>
+        <span class="meta-chip">Anual R$ {{ plan.annual_price }}</span>
+      </div>
+      <div class="toolbar">
+        <a class="btn" href="{{ url_for('public.signup', plan_id=plan.id) }}">Escolher plano</a>
+      </div>
+      <div class="progress" style="margin-top:16px"><span style="width:{{ 35 + loop.index * 20 }}%"></span></div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel" style="margin-top:22px">
+  <div class="section-head" style="margin-top:0">
+    <div>
+      <span class="badge">Tabela comparativa</span>
+      <h2>Veja os detalhes lado a lado.</h2>
+    </div>
+  </div>
+  <div class="compact-table">
+    <table>
+      <tr><th>Plano</th><th>Mensal</th><th>Trimestral</th><th>Anual</th><th>Beneficios</th></tr>
+      {% for p in plans %}
+      <tr><td>{{ p.name }}</td><td>R$ {{ p.monthly_price }}</td><td>R$ {{ p.quarterly_price }}</td><td>R$ {{ p.annual_price }}</td><td>{{ p.benefits.replace(';',', ') }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div>
+    <span class="badge">Matricula</span>
+    <h2>Precisa de ajuda para escolher?</h2>
+    <p>Fale com a equipe Apex e encontre o melhor plano para sua frequencia, objetivo e rotina.</p>
+  </div>
+  <a class="btn" href="{{ url_for('public.signup') }}">Criar conta de aluno</a>
+</section>
+{% endblock %}

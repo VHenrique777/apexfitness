@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title">
+  <div>
+    <span class="badge">Loja</span>
+    <h1>Venda de produtos</h1>
+  </div>
+</div>
+
+<form method="post" class="panel">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Aluno cadastrado</label>
+  <select name="student_id">
+    <option value="">Selecione</option>
+    {% for s in students %}
+      <option value="{{ s.id }}" {% if selected and selected.id==s.id %}selected{% endif %}>{{ s.user.name }} - {{ s.user.email }}</option>
+    {% endfor %}
+  </select>
+  <div class="toolbar"><button>Selecionar aluno</button></div>
+</form>
+
+{% if selected %}
+  <h2 id="produtos" style="margin-top:18px">Produtos</h2>
+  <div class="grid">
+    {% for p in products %}
+      <article class="card">
+        <h3>{{ p.name }}</h3>
+        <p>{{ p.category }} | Estoque {{ p.stock }}</p>
+        <div class="metric">R$ {{ p.price }}</div>
+        <form method="post" action="{{ url_for('mercado.add', product_id=p.id) }}" class="keep-scroll">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label>Quantidade</label>
+          <input name="quantity" type="number" min="1" value="1">
+          <button>Adicionar</button>
+        </form>
+      </article>
+    {% endfor %}
+  </div>
+
+  <section id="carrinho" class="panel" style="margin-top:18px">
+    <h2>Carrinho</h2>
+    <table>
+      <tr><th>Produto</th><th>Qtd</th><th>Subtotal</th><th></th></tr>
+      {% for i in items %}
+        <tr>
+          <td>{{ i.product.name }}</td>
+          <td>{{ i.quantity }}</td>
+          <td>R$ {{ i.subtotal }}</td>
+          <td><a class="btn ghost keep-scroll-link" href="{{ url_for('mercado.remove', product_id=i.product.id) }}">Remover</a></td>
+        </tr>
+      {% endfor %}
+    </table>
+    <h2>Total: R$ {{ total }}</h2>
+    <form method="post" action="{{ url_for('mercado.checkout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="grid">
+        <div>
+          <label>Pagamento</label>
+          <select name="payment_method">
+            <option>PIX</option>
+            <option>DINHEIRO</option>
+            <option>CARTAO_DEBITO</option>
+            <option>CARTAO_CREDITO</option>
+          </select>
+        </div>
+        <div>
+          <label>Status</label>
+          <select name="payment_status">
+            <option>PAGO</option>
+            <option>PENDENTE</option>
+          </select>
+        </div>
+        <div>
+          <label>Autorizacao</label>
+          <input name="card_authorization">
+        </div>
+      </div>
+      <div class="toolbar"><button>Finalizar pagamento</button></div>
+    </form>
+  </section>
+{% endif %}
+
+<script>
+  const scrollKey = "apex-mercado-scroll";
+
+  window.addEventListener("DOMContentLoaded", function () {
+    const savedScroll = sessionStorage.getItem(scrollKey);
+    if (savedScroll !== null) {
+      sessionStorage.removeItem(scrollKey);
+      window.scrollTo(0, Number(savedScroll));
+    }
+  });
+
+  document.querySelectorAll(".keep-scroll").forEach(function (form) {
+    form.addEventListener("submit", function () {
+      sessionStorage.setItem(scrollKey, String(window.scrollY));
+    });
+  });
+
+  document.querySelectorAll(".keep-scroll-link").forEach(function (link) {
+    link.addEventListener("click", function () {
+      sessionStorage.setItem(scrollKey, String(window.scrollY));
+    });
+  });
+</script>
+{% endblock %}

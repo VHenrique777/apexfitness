@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+{% set student_rows = students if students is iterable and students is not string else [] %}
+{% set student_count = students|length if students is iterable and students is not string else students %}
+{% set product_rows = products if products is iterable and products is not string else [] %}
+{% set product_count = products|length if products is iterable and products is not string else products %}
+{% set sale_rows = sales if sales is defined and sales is iterable and sales is not string else [] %}
+{% set sale_count = sales|length if sales is defined and sales is iterable and sales is not string else 0 %}
+{% set professional_rows = users if users is iterable and users is not string else [] %}
+<div class="page-title">
+  <div><span class="badge">Gerente Geral</span><h1>Gestao geral</h1></div>
+  <a class="btn" href="{{ url_for('admin.reports', kind='financeiro') }}">PDF financeiro</a>
+</div>
+<div class="grid">
+  <section class="card"><h3>Alunos</h3><div class="metric">{{ student_count }}</div><p>{{ active_students }} ativos</p></section>
+  <section class="card"><h3>Estoque</h3><div class="metric">{{ product_count }}</div><p>Produtos cadastrados</p></section>
+  <section class="card"><h3>Vendas</h3><div class="metric">{{ sale_count }}</div><p>Vendas registradas</p></section>
+  <section class="card"><h3>Pendencias</h3><div class="metric">{{ pending }}</div><p>Pagamentos pendentes</p></section>
+</div>
+<div class="grid" style="margin-top:18px">
+  <a class="card" href="{{ url_for('financeiro.home') }}"><h3>Financeiro</h3><p>Dashboard financeiro completo.</p></a>
+  <a class="card" href="{{ url_for('admin.users') }}"><h3>Usuarios</h3><p>Gerenciar funcionarios.</p></a>
+  <a class="card" href="{{ url_for('admin.logs') }}"><h3>Logs</h3><p>Auditoria do sistema.</p></a>
+</div>
+
+<section class="panel" style="margin-top:18px">
+  <div class="page-title" style="margin-bottom:12px">
+    <div><span class="badge">Estoque</span><h2>Produtos cadastrados</h2></div>
+    <a class="btn" href="{{ url_for('admin.reports', kind='estoque') }}">Criar PDF</a>
+  </div>
+  <table>
+    <tr><th>Produto</th><th>Categoria</th><th>Preco</th><th>Estoque</th></tr>
+    {% for product in product_rows %}
+      <tr><td>{{ product.name }}</td><td>{{ product.category }}</td><td>R$ {{ product.price }}</td><td>{{ product.stock }}</td></tr>
+    {% else %}
+      <tr><td colspan="4">Nenhum produto cadastrado.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section class="panel" style="margin-top:18px">
+  <div class="page-title" style="margin-bottom:12px">
+    <div><span class="badge">Vendas</span><h2>Vendas registradas</h2></div>
+    <a class="btn" href="{{ url_for('admin.reports', kind='vendas') }}">Criar PDF</a>
+  </div>
+  <table>
+    <tr><th>Venda</th><th>Aluno</th><th>Pagamento</th><th>Status</th><th>Total</th></tr>
+    {% for sale in sale_rows %}
+      <tr><td>#{{ sale.id }}</td><td>{{ sale.student.user.name if sale.student else '-' }}</td><td>{{ sale.payment_method }}</td><td>{{ sale.payment_status }}</td><td>R$ {{ sale.total }}</td></tr>
+    {% else %}
+      <tr><td colspan="5">Nenhuma venda registrada.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section class="panel" style="margin-top:18px">
+  <div class="page-title" style="margin-bottom:12px">
+    <div><span class="badge">Alunos</span><h2>Alunos cadastrados</h2></div>
+    <a class="btn" href="{{ url_for('admin.reports', kind='alunos') }}">Criar PDF</a>
+  </div>
+  <table>
+    <tr><th>Nome</th><th>Email</th><th>Plano</th><th>Status</th></tr>
+    {% for student in student_rows %}
+      <tr><td>{{ student.user.name }}</td><td>{{ student.user.email }}</td><td>{{ student.plan.name if student.plan else '-' }}</td><td>{{ student.account_status }}</td></tr>
+    {% else %}
+      <tr><td colspan="4">Nenhum aluno cadastrado.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+
+<section class="panel" style="margin-top:18px">
+  <div class="page-title" style="margin-bottom:12px">
+    <div><span class="badge">Profissionais</span><h2>Profissionais cadastrados</h2></div>
+    <a class="btn" href="{{ url_for('admin.reports', kind='profissionais') }}">Criar PDF</a>
+  </div>
+  <table>
+    <tr><th>Nome</th><th>Email</th><th>Cargo</th><th>Status</th></tr>
+    {% for user in professional_rows %}
+      <tr><td>{{ user.name }}</td><td>{{ user.email }}</td><td>{{ user.role.value }}</td><td>{{ 'Ativo' if user.is_active else 'Inativo' }}</td></tr>
+    {% else %}
+      <tr><td colspan="4">Nenhum profissional cadastrado.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

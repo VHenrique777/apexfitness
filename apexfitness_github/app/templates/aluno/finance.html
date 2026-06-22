@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title"><div><span class="badge">Financeiro</span><h1>Historico financeiro</h1></div></div>
+<section class="panel">
+  <div class="section-head" style="margin-top:0"><div><span class="badge">Pagamentos</span><h2>Cobrancas e confirmacoes</h2></div></div>
+  <table><tr><th>Valor</th><th>Status</th><th>Metodo</th><th>Vencimento</th><th>Pago em</th></tr>{% for p in payments %}<tr><td>R$ {{ p.amount }}</td><td>{{ p.status }}</td><td>{{ p.method }}</td><td>{{ p.due_date }}</td><td>{{ p.paid_at or '-' }}</td></tr>{% else %}<tr><td colspan="5">Nenhum pagamento registrado.</td></tr>{% endfor %}</table>
+</section>
+<section class="panel" style="margin-top:18px">
+  <div class="section-head" style="margin-top:0"><div><span class="badge">Servicos</span><h2>Solicitacoes vinculadas</h2></div></div>
+  <table><tr><th>Servico</th><th>Status</th><th>Pagamento</th></tr>{% for r in requests %}<tr><td>{{ r.service.name }}</td><td>{{ r.status }}</td><td>{{ r.payment.status if r.payment else '-' }}</td></tr>{% else %}<tr><td colspan="3">Nenhuma solicitacao de servico.</td></tr>{% endfor %}</table>
+</section>
+{% endblock %}

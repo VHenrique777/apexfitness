@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Cadastro | Apex Fitness{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-intro">
+    <div>
+      <span class="badge">Pre-matricula</span>
+      <h1>Crie sua conta de aluno.</h1>
+      <p>Escolha um plano, cadastre seus dados e finalize a liberacao presencialmente na recepcao da Apex Fitness.</p>
+    </div>
+    <div class="hero-pill-row">
+      <span class="hero-pill">Conta de aluno</span>
+      <span class="hero-pill">Pagamento na recepcao</span>
+      <span class="hero-pill">Entrada autorizada</span>
+    </div>
+  </div>
+  <section class="panel auth-card">
+    <span class="badge">Cadastro</span>
+    <h1>Dados do aluno</h1>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="grid">
+        <div><label>Nome</label><input name="name" required></div>
+        <div><label>Email</label><input name="email" type="email" required></div>
+        <div><label>Senha</label><input name="password" type="password" required></div>
+        <div><label>Telefone</label><input name="phone"></div>
+        <div><label>CPF</label><input name="cpf"></div>
+        <div><label>RG</label><input name="rg"></div>
+        <div><label>Idade</label><input name="age" type="number"></div>
+        <div><label>Sexo</label><input name="sex"></div>
+        <div><label>Endereco</label><input name="address"></div>
+        <div><label>Plano</label><select name="plan_id" required>{% for p in plans %}<option value="{{ p.id }}" {% if selected_plan and selected_plan.id == p.id %}selected{% endif %}>{{ p.name }} - R$ {{ p.monthly_price }}/mes</option>{% endfor %}</select></div>
+        <div><label>Cobranca</label><select name="billing_cycle"><option value="monthly">Mensal</option><option value="quarterly">Trimestral</option><option value="annual">Anual</option></select></div>
+      </div>
+      <p>A conta sera criada como aluno pendente. O acesso a academia e o check-in ficam bloqueados ate a recepcao confirmar o pagamento.</p>
+      <div class="toolbar"><button>Criar conta</button><a class="btn ghost" href="{{ url_for('auth.login') }}">Ja tenho conta</a></div>
+    </form>
+  </section>
+</section>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title">
+  <div>
+    <span class="badge">Nutricionista</span>
+    <h1>Plano alimentar</h1>
+  </div>
+</div>
+
+<div class="grid">
+  <article class="card">
+    <span class="badge">Perda de peso</span>
+    <h3>Semana completa para perda de peso</h3>
+    <p>Plano semanal com refeicoes leves e controladas.</p>
+    <button type="button" class="btn secondary use-food-template" data-template="perda_peso">Usar modelo</button>
+  </article>
+  <article class="card">
+    <span class="badge">Massa muscular</span>
+    <h3>Semana completa para ganho de massa muscular</h3>
+    <p>Plano semanal com maior aporte de proteinas e carboidratos.</p>
+    <button type="button" class="btn secondary use-food-template" data-template="ganho_massa">Usar modelo</button>
+  </article>
+  <article class="card">
+    <span class="badge">Manutencao</span>
+    <h3>Semana completa para manutencao do peso</h3>
+    <p>Plano semanal equilibrado para manter a rotina alimentar.</p>
+    <button type="button" class="btn secondary use-food-template" data-template="manutencao">Usar modelo</button>
+  </article>
+</div>
+
+<form method="post" class="panel" style="margin-top:18px">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="grid">
+    <div>
+      <label>Aluno</label>
+      <select name="student_id" required>
+        {% for s in students %}
+          <option value="{{ s.id }}">{{ s.user.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>Titulo</label>
+      <input id="food-title" name="title" required>
+    </div>
+    <div>
+      <label>Horarios</label>
+      <input id="food-schedules" name="schedules">
+    </div>
+  </div>
+  <label>Refeicoes</label>
+  <textarea id="food-meals" name="meals" rows="12" required></textarea>
+  <label>Observacoes</label>
+  <textarea id="food-observations" name="observations"></textarea>
+  <div class="toolbar">
+    <button {% if not students %}disabled{% endif %}>Gerar PDF e enviar</button>
+    {% if not students %}<span class="badge">Vincule um aluno antes de enviar planos</span>{% endif %}
+  </div>
+</form>
+
+<h2 style="margin-top:18px">Alunos contratados</h2>
+<div class="grid">
+  {% for s in students %}
+    <article class="card"><h3>{{ s.user.name }}</h3><p>{{ s.user.email }}</p></article>
+  {% else %}
+    <p>Nenhum aluno vinculado.</p>
+  {% endfor %}
+</div>
+
+<script>
+  const foodTemplates = {
+    perda_peso: {
+      title: "Semana completa para perda de peso",
+      schedules: "Cafe, almoco e jantar",
+      meals: `Segunda
+Cafe: 2 ovos + 1 fatia pao integral + cafe
+Almoco: frango, arroz integral, salada
+Jantar: peixe e legumes
+
+Terca
+Cafe: iogurte com aveia e banana
+Almoco: carne magra, batata-doce e salada
+Jantar: omelete e legumes
+
+Quarta
+Cafe: tapioca pequena com queijo branco
+Almoco: frango, feijao e salada
+Jantar: sopa de legumes com frango
+
+Quinta
+Cafe: ovos mexidos e mamao
+Almoco: peixe, arroz integral e legumes
+Jantar: salada grande com frango
+
+Sexta
+Cafe: iogurte natural e maca
+Almoco: patinho moido, legumes e feijao
+Jantar: omelete proteica
+
+Sabado
+Cafe: ovos cozidos e banana
+Almoco: frango grelhado e salada
+Jantar: peixe e legumes
+
+Domingo
+Cafe: pao integral e ovos
+Almoco: refeicao livre controlada
+Jantar: sopa de legumes`,
+      observations: "Priorizar agua ao longo do dia e ajustar quantidades conforme acompanhamento."
+    },
+    ganho_massa: {
+      title: "Semana completa para ganho de massa muscular",
+      schedules: "Cafe, almoco e jantar",
+      meals: `Segunda
+Cafe: 4 ovos, pao integral, banana
+Almoco: 200 g de frango, arroz e feijao
+Jantar: carne magra, batata-doce
+
+Terca
+Cafe: vitamina de banana, aveia e leite
+Almoco: peixe, arroz e feijao
+Jantar: frango e macarrao integral
+
+Quarta
+Cafe: tapioca com ovos e queijo
+Almoco: carne bovina, arroz e salada
+Jantar: frango e mandioca
+
+Quinta
+Cafe: omelete de 4 ovos
+Almoco: peixe, arroz integral e feijao
+Jantar: carne magra e batata
+
+Sexta
+Cafe: aveia, leite e banana
+Almoco: frango grelhado, arroz e feijao
+Jantar: macarrao integral com carne moida
+
+Sabado
+Cafe: ovos, pao integral e fruta
+Almoco: churrasco magro com mandioca
+Jantar: peixe e arroz
+
+Domingo
+Cafe: tapioca recheada com frango
+Almoco: carne assada, arroz e feijao
+Jantar: omelete e batata-doce`,
+      observations: "Manter regularidade das refeicoes e ajustar por evolucao de treino."
+    },
+    manutencao: {
+      title: "Semana completa para manutencao do peso",
+      schedules: "Cafe, almoco e jantar",
+      meals: `Segunda
+Cafe: ovos e pao integral
+Almoco: frango, arroz e feijao
+Jantar: peixe e legumes
+
+Terca
+Cafe: iogurte, aveia e fruta
+Almoco: carne magra e arroz
+Jantar: omelete e salada
+
+Quarta
+Cafe: tapioca com queijo
+Almoco: peixe, arroz integral e salada
+Jantar: sopa de legumes
+
+Quinta
+Cafe: ovos mexidos e fruta
+Almoco: frango e feijao
+Jantar: carne magra e legumes
+
+Sexta
+Cafe: pao integral e ovos
+Almoco: peixe e arroz integral
+Jantar: salada com frango
+
+Sabado
+Cafe: iogurte e banana
+Almoco: refeicao equilibrada
+Jantar: omelete e salada
+
+Domingo
+Cafe: tapioca e ovos
+Almoco: refeicao familiar moderada
+Jantar: sopa leve`,
+      observations: "Preservar equilibrio semanal e controlar excessos em refeicoes livres."
+    }
+  };
+
+  document.querySelectorAll(".use-food-template").forEach(function (button) {
+    button.addEventListener("click", function () {
+      const template = foodTemplates[button.dataset.template];
+      document.getElementById("food-title").value = template.title;
+      document.getElementById("food-schedules").value = template.schedules;
+      document.getElementById("food-meals").value = template.meals;
+      document.getElementById("food-observations").value = template.observations;
+    });
+  });
+</script>
+{% endblock %}

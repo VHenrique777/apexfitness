@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="pt-br" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Apex Fitness{% endblock %}</title>
+  <script>
+    (function () {
+      var savedTheme = localStorage.getItem('apex-theme');
+      if (savedTheme === 'dark' || savedTheme === 'light') {
+        document.documentElement.dataset.theme = savedTheme;
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --primary:#D71920; --secondary:#151515; --bg:#F4F5F7; --white:#FFFFFF; --accent:#F26A2E;
+      --success:#12A454; --warn:#D6A600; --error:#D93030; --text:#1F2328; --muted:#69707A;
+      --line:#E1E5EA; --surface:#FAFBFC; --surface-strong:#F0F2F5; --shadow:0 14px 34px rgba(24,31,42,.08); --radius:8px;
+    }
+    html[data-theme="dark"] {
+      --bg:#0F1115; --white:#171A20; --text:#F4F6F8; --muted:#A8B0BA; --line:#2A3038;
+      --surface:#13161B; --surface-strong:#1D222A; --shadow:0 18px 44px rgba(0,0,0,.36);
+    }
+    * { box-sizing:border-box; }
+    html { overflow-x:hidden; }
+    body {
+      margin:0; font-family:Poppins, Arial, sans-serif; background:
+        linear-gradient(180deg, rgba(215,25,32,.045), transparent 260px),
+        radial-gradient(circle at 94% 0%, rgba(242,106,46,.08), transparent 280px),
+        var(--bg);
+      color:var(--text); overflow-x:hidden;
+    }
+    body:before {
+      content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+      background-image:linear-gradient(rgba(31,35,40,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(31,35,40,.035) 1px, transparent 1px);
+      background-size:36px 36px; mask-image:linear-gradient(to bottom, rgba(0,0,0,.8), transparent 62%);
+    }
+    a { color:inherit; text-decoration:none; }
+    .app { min-height:100vh; }
+    .site-header {
+      position:sticky; top:0; z-index:8; background:rgba(255,255,255,.9); border-bottom:1px solid var(--line);
+      box-shadow:0 10px 28px rgba(20,20,20,.05); backdrop-filter:blur(18px);
+    }
+    html[data-theme="dark"] .site-header { background:rgba(23,26,32,.92); }
+    html[data-theme="dark"] .site-header { box-shadow:0 12px 30px rgba(0,0,0,.28); }
+    .market-top {
+      display:flex; align-items:center; justify-content:space-between; gap:18px; min-height:74px;
+      padding:12px 30px; max-width:1520px; margin:auto;
+    }
+    .brand { display:flex; align-items:center; gap:12px; font-size:20px; font-weight:900; white-space:nowrap; }
+    .brand-mark { width:42px; height:42px; border-radius:8px; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg,var(--primary),var(--accent)); box-shadow:0 12px 22px rgba(215,25,32,.24); letter-spacing:0; }
+    .topbar-title { min-width:180px; flex:1; color:var(--muted); font-size:13px; font-weight:700; }
+    .header-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+    .market-nav {
+      display:flex; align-items:center; gap:8px; padding:0 28px 12px; max-width:1500px; margin:auto;
+      overflow-x:auto; scrollbar-width:none;
+    }
+    .market-nav::-webkit-scrollbar { display:none; }
+    .nav-group { display:none; }
+    .nav-link {
+      display:flex; align-items:center; justify-content:center; min-height:38px; padding:8px 13px; border-radius:8px;
+      color:var(--text); font-size:14px; font-weight:800; white-space:nowrap; transition:.18s ease;
+    }
+    .nav-link:hover { background:rgba(227,28,28,.1); color:var(--primary); }
+    .system-link { background:rgba(215,25,32,.08); color:var(--primary); }
+    .logout-link { background:var(--secondary); color:#fff; }
+    .main { min-width:0; }
+    .content { padding:30px; max-width:1440px; margin:auto; }
+    .page-title { display:flex; align-items:flex-end; justify-content:space-between; gap:18px; margin-bottom:22px; }
+    .page-title > div { min-width:0; }
+    h1 { margin:0; font-size:clamp(30px,4vw,46px); line-height:1.04; letter-spacing:0; }
+    h2 { margin:0 0 14px; font-size:24px; line-height:1.18; }
+    h3 { margin:0 0 8px; }
+    p { color:var(--muted); line-height:1.6; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(245px,1fr)); gap:18px; }
+    .card, .panel { background:var(--white); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); }
+    .card { position:relative; overflow:hidden; transition:transform .18s ease, box-shadow .18s ease; }
+    .card:before { content:""; position:absolute; inset:0 0 auto; height:3px; background:linear-gradient(90deg,var(--primary),var(--accent)); }
+    .card:hover { transform:translateY(-3px); box-shadow:0 20px 42px rgba(24,31,42,.12); }
+    .metric { font-size:34px; font-weight:900; color:var(--primary); }
+    .badge { display:inline-flex; align-items:center; padding:5px 10px; border-radius:999px; background:rgba(215,25,32,.09); color:var(--primary); font-size:12px; font-weight:800; }
+    .btn, button { display:inline-flex; justify-content:center; align-items:center; gap:8px; min-height:42px; border:0; border-radius:8px; padding:10px 15px; background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; font-weight:800; cursor:pointer; box-shadow:0 12px 22px rgba(215,25,32,.18); transition:.18s ease; }
+    .btn:hover, button:hover { transform:translateY(-2px); filter:saturate(1.08); }
+    .btn.secondary { background:var(--secondary); }
+    .btn.ghost { background:transparent; color:var(--text); border:1px solid var(--line); box-shadow:none; }
+    .btn.danger, button.danger { background:var(--error); box-shadow:0 14px 24px rgba(255,23,68,.18); }
+    .toolbar { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:16px 0; }
+    .toolbar form { display:inline-flex; margin:0; }
+    label { display:block; margin:10px 0 6px; font-size:13px; font-weight:800; }
+    input, select, textarea { width:100%; border:1px solid var(--line); border-radius:8px; padding:12px 13px; background:var(--surface); color:var(--text); font:inherit; outline:none; transition:.16s ease; }
+    input:focus, select:focus, textarea:focus { border-color:var(--primary); box-shadow:0 0 0 4px rgba(227,28,28,.1); }
+    textarea { min-height:120px; resize:vertical; }
+    table { width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border:1px solid var(--line); border-radius:var(--radius); background:var(--white); box-shadow:var(--shadow); }
+    th, td { padding:13px 14px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    tr:last-child td { border-bottom:0; }
+    tr:hover td { background:rgba(31,35,40,.025); }
+    th { background:var(--surface-strong); color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+    .flash { margin:10px 0 18px; padding:13px 15px; border-radius:8px; background:rgba(18,164,84,.12); border:1px solid rgba(18,164,84,.35); font-weight:700; }
+    .flash.error { background:rgba(255,23,68,.12); border-color:rgba(255,23,68,.35); }
+    .hero { min-height:76vh; display:grid; grid-template-columns:1.05fr .95fr; align-items:center; gap:28px; }
+    .hero-art { min-height:420px; border-radius:12px; background:linear-gradient(135deg,#1A1A1A,#3B1010); position:relative; overflow:hidden; box-shadow:var(--shadow); }
+    .hero-art:before { content:""; position:absolute; inset:0; background:linear-gradient(120deg,transparent 0 35%,rgba(227,28,28,.55) 35% 36%,transparent 36% 70%,rgba(255,107,53,.5) 70% 71%,transparent 71%); animation:slide 7s linear infinite; }
+    @keyframes slide { to { transform:translateX(-80px); } }
+    .hero-art strong { position:absolute; left:30px; bottom:28px; color:#fff; font-size:44px; line-height:.95; }
+    .toggle { min-height:38px; padding:8px 13px; background:var(--surface); color:var(--text); border:1px solid var(--line); box-shadow:none; white-space:nowrap; }
+    .progress { height:10px; border-radius:999px; background:var(--line); overflow:hidden; }
+    .progress span { display:block; height:100%; background:linear-gradient(90deg,var(--success),var(--accent)); }
+    .page-hero-pro {
+      margin-bottom:24px; min-height:360px; padding:32px; border-radius:12px; color:#fff; overflow:hidden; position:relative; display:flex; align-items:end;
+      background:
+        linear-gradient(90deg, rgba(10,10,10,.88), rgba(16,16,16,.66) 48%, rgba(215,25,32,.26)),
+        linear-gradient(180deg, rgba(0,0,0,.16), rgba(0,0,0,.72)),
+        var(--hero-image, linear-gradient(135deg, #151515 0%, #241010 54%, #E31C1C 100%));
+      background-size:cover; background-position:center;
+      box-shadow:0 24px 60px rgba(227,28,28,.16);
+    }
+    .page-hero-pro:before {
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(120deg, transparent 0 52%, rgba(255,255,255,.12) 52% 53%, transparent 53% 76%, rgba(255,255,255,.09) 76% 77%, transparent 77%);
+    }
+    .page-hero-inner { width:100%; position:relative; z-index:1; display:grid; grid-template-columns:1fr auto; gap:22px; align-items:end; }
+    .page-hero-pro h1 { max-width:760px; font-size:clamp(34px,5vw,64px); }
+    .page-hero-pro p { max-width:720px; color:rgba(255,255,255,.76); font-size:17px; margin:14px 0 0; }
+    .hero-pill-row { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+    .hero-pill { display:inline-flex; align-items:center; min-height:36px; padding:8px 12px; border-radius:999px; background:rgba(0,0,0,.28); border:1px solid rgba(255,255,255,.16); font-weight:800; font-size:13px; }
+    .hero-score { min-width:170px; padding:18px; border-radius:8px; background:rgba(0,0,0,.28); border:1px solid rgba(255,255,255,.16); backdrop-filter:blur(10px); }
+    .hero-score strong { display:block; font-size:38px; line-height:1; }
+    .hero-score span { color:rgba(255,255,255,.72); font-size:13px; font-weight:800; }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:18px; margin:24px 0 16px; }
+    .section-head h2 { margin:6px 0 0; font-size:clamp(25px,3.5vw,38px); }
+    .section-head p { max-width:620px; margin:8px 0 0; }
+    .feature-card h3, .commerce-card h3 { font-size:21px; }
+    .feature-card p, .commerce-card p { margin-bottom:0; }
+    .card-photo {
+      height:154px; margin:-20px -20px 16px; background:
+        linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.38)),
+        var(--card-image);
+      background-size:cover; background-position:center; border-bottom:1px solid var(--line);
+    }
+    .photo-panel {
+      min-height:360px; border-radius:8px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow);
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.58)),
+        var(--panel-image);
+      background-size:cover; background-position:center; color:#fff; padding:24px; display:flex; align-items:end;
+    }
+    .photo-panel p { color:rgba(255,255,255,.78); }
+    .photo-panel-content { max-width:520px; }
+    .visual-split { display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,.8fr); gap:18px; align-items:stretch; margin-top:22px; }
+    .card-meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+    .meta-chip { display:inline-flex; align-items:center; min-height:30px; padding:6px 10px; border-radius:8px; background:var(--surface); border:1px solid var(--line); color:var(--muted); font-size:12px; font-weight:800; }
+    .price-row { display:flex; align-items:end; justify-content:space-between; gap:12px; margin:16px 0; }
+    .price-row .metric { line-height:1; }
+    .compact-table { overflow:auto; }
+    .cta-band {
+      margin-top:22px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:18px;
+      padding:22px; border-radius:8px; background:var(--secondary); color:#fff;
+    }
+    .cta-band p { color:rgba(255,255,255,.72); margin:6px 0 0; }
+    .contact-panel { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .map-card {
+      min-height:300px; border-radius:8px; padding:22px; background:
+        linear-gradient(135deg, rgba(227,28,28,.14), rgba(255,107,53,.08)),
+        var(--white);
+      border:1px solid var(--line); box-shadow:var(--shadow);
+    }
+    .map-lines { display:grid; gap:12px; margin-top:22px; }
+    .map-line { height:12px; border-radius:999px; background:var(--line); }
+    .map-line:nth-child(2) { width:76%; }
+    .map-line:nth-child(3) { width:54%; }
+    .auth-shell { display:grid; grid-template-columns:1fr minmax(320px,520px); gap:24px; align-items:stretch; max-width:1100px; margin:20px auto; min-width:0; }
+    .auth-intro {
+      min-height:420px; border-radius:12px; padding:28px; color:#fff; display:flex; flex-direction:column; justify-content:space-between;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(255,107,53,.36), transparent 30%),
+        linear-gradient(135deg, #151515, #2A1212 55%, #E31C1C);
+      box-shadow:0 24px 60px rgba(227,28,28,.16);
+    }
+    .auth-intro h1 { font-size:clamp(38px,5vw,62px); }
+    .auth-intro p { color:rgba(255,255,255,.76); }
+    .auth-card { padding:26px; }
+    .auth-card h1 { font-size:34px; }
+    :focus-visible { outline:3px solid rgba(215,25,32,.22); outline-offset:2px; }
+    ::selection { background:rgba(215,25,32,.18); }
+    .panel > .page-title { margin-bottom:14px; }
+    .panel h2 + table, .panel h3 + table { margin-top:10px; }
+    .card p:last-child, .panel p:last-child { margin-bottom:0; }
+    .content > .grid + .grid, .content > .grid + .panel, .content > .panel + .grid, .content > .panel + .panel { margin-top:18px; }
+    button:disabled, .btn[disabled] { opacity:.55; cursor:not-allowed; transform:none; filter:none; }
+    .site-footer { max-width:1440px; margin:0 auto; padding:0 30px 28px; color:var(--muted); font-size:12px; font-weight:700; }
+    .site-footer-inner { border-top:1px solid var(--line); padding-top:18px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    @media (max-width:900px) {
+      .market-top { padding:14px 16px; align-items:flex-start; flex-direction:column; }
+      .topbar-title { min-width:0; }
+      .header-actions { width:100%; justify-content:flex-start; }
+      .market-nav { padding:0 16px 12px; }
+      .content { padding:18px; }
+      .hero { grid-template-columns:1fr; }
+      .page-hero-inner, .cta-band, .contact-panel { grid-template-columns:1fr; }
+      .page-hero-pro { min-height:320px; padding:24px; }
+      .visual-split { grid-template-columns:1fr; }
+      .photo-panel { min-height:300px; }
+      .auth-shell { grid-template-columns:minmax(0,1fr); margin:0; }
+      .auth-intro, .auth-card { min-width:0; width:100%; }
+      .auth-intro { min-height:260px; padding:22px; }
+      .auth-card { padding:22px; }
+      .auth-card .toolbar { align-items:stretch; }
+      .auth-card .toolbar .btn, .auth-card .toolbar button { width:100%; }
+      .hero-score { min-width:0; }
+      .section-head { align-items:start; flex-direction:column; }
+      .page-title { align-items:flex-start; flex-direction:column; }
+      table { display:block; overflow-x:auto; white-space:nowrap; }
+      th, td { padding:12px; }
+      .site-footer { padding:0 18px 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="site-header">
+      <div class="market-top">
+        {% set is_professional = current_user.is_authenticated and current_user.role.value in ["PROFESSOR","PERSONAL","NUTRICIONISTA","FISIOTERAPEUTA"] %}
+        {% set is_system_user = current_user.is_authenticated %}
+        <a class="brand" href="{{ url_for('dashboard.home') if is_system_user else url_for('public.index') }}"><span class="brand-mark">AX</span><span>Apex Fitness</span></a>
+        <strong class="topbar-title">{% block topbar %}Gestao profissional de academia{% endblock %}</strong>
+        <div class="header-actions">
+          <button class="toggle" type="button" onclick="toggleTheme()" aria-label="Alternar tema">Tema</button>
+          {% if current_user.is_authenticated %}
+            <a class="nav-link system-link" href="{{ url_for('dashboard.home') }}">Dashboard</a>
+            <a class="nav-link logout-link" href="{{ url_for('auth.logout') }}">Sair</a>
+          {% else %}
+            <a class="nav-link system-link" href="{{ url_for('auth.login') }}">Login</a>
+          {% endif %}
+        </div>
+      </div>
+      <nav class="market-nav" aria-label="Menu principal">
+        {% if not is_system_user %}
+          <a class="nav-link" href="{{ url_for('public.index') }}">Inicio</a>
+          <a class="nav-link" href="{{ url_for('public.about') }}">Sobre</a>
+          <a class="nav-link" href="{{ url_for('public.plans') }}">Planos</a>
+          <a class="nav-link" href="{{ url_for('public.services') }}">Servicos</a>
+          <a class="nav-link" href="{{ url_for('public.products') }}">Produtos</a>
+          <a class="nav-link" href="{{ url_for('public.contact') }}">Contato</a>
+        {% endif %}
+        {% if current_user.is_authenticated %}
+          {% if current_user.role.value in ["RECEPCAO","ADMIN"] %}<a class="nav-link system-link" href="{{ url_for('admin.reception') }}">Recepcao</a>{% endif %}
+          {% if current_user.role.value in ["ATENDENTE_MERCADO","ADMIN"] %}<a class="nav-link system-link" href="{{ url_for('mercado.store') }}">Loja</a>{% endif %}
+          {% if current_user.role.value in ["ADMIN","DONO","GERENTE_GERAL"] %}<a class="nav-link system-link" href="{{ url_for('admin.users') }}">Usuarios</a><a class="nav-link system-link" href="{{ url_for('admin.plans_admin') }}">Planos</a><a class="nav-link system-link" href="{{ url_for('admin.services_admin') }}">Servicos</a><a class="nav-link system-link" href="{{ url_for('admin.email_settings') }}">SMTP</a><a class="nav-link system-link" href="{{ url_for('financeiro.home') }}">Financeiro</a><a class="nav-link system-link" href="{{ url_for('admin.logs') }}">Logs</a>{% endif %}
+          {% if current_user.role.value in ["GERENTE_MERCADO","ADMIN","DONO"] %}<a class="nav-link system-link" href="{{ url_for('admin.products') }}">Produtos</a>{% endif %}
+        {% endif %}
+      </nav>
+    </header>
+    <main class="main">
+      <section class="content">
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="site-footer-inner">
+        <span>Apex Fitness</span>
+        <span>Gestao integrada de academia, loja e equipe.</span>
+      </div>
+    </footer>
+  </div>
+  <script>
+    function toggleTheme() {
+      var nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem('apex-theme', nextTheme);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title"><div><span class="badge">Recepcao</span><h1>Central de atendimento</h1></div></div>
+<div class="grid">
+  <a class="card" href="{{ url_for('admin.create_student') }}"><h3>Cadastro presencial</h3><p>Criar aluno diretamente pela recepcao.</p></a>
+  <section class="card"><h3>Pagamentos pendentes</h3><div class="metric">{{ pending_payments|length }}</div><p>Confirmar ou recusar antes de liberar acesso.</p></section>
+  <section class="card"><h3>Servicos solicitados</h3><div class="metric">{{ service_requests|length }}</div><p>Ativados quando o pagamento for confirmado.</p></section>
+  <section class="card"><h3>Hoje</h3><div class="metric">{{ today.strftime('%d/%m') }}</div><p>Busca por aluno, CPF ou email.</p></section>
+</div>
+
+<section class="panel" style="margin-top:18px">
+  <div class="section-head" style="margin-top:0"><div><span class="badge">Busca</span><h2>Localizar alunos</h2></div></div>
+  <form class="toolbar" method="get"><input name="q" value="{{ q }}" placeholder="Nome, email ou CPF"><button>Buscar</button><a class="btn ghost" href="{{ url_for('admin.reception') }}">Limpar</a></form>
+  <div class="compact-table">
+    <table>
+      <tr><th>Aluno</th><th>Plano</th><th>Status</th><th>Proximo pagamento</th><th>Acao</th></tr>
+      {% for profile in students %}
+      <tr>
+        <td>{{ profile.user.name }}<br><span class="meta-chip">{{ profile.user.email }}</span></td>
+        <td>{{ profile.plan.name if profile.plan else '-' }}</td>
+        <td>{{ profile.account_status }}</td>
+        <td>{{ profile.next_payment_at or '-' }}</td>
+        <td>{% if profile.account_status != 'ATIVO' %}<form method="post" action="{{ url_for('admin.authorize_student', profile_id=profile.id) }}" class="toolbar"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><select name="method"><option>DINHEIRO</option><option>PIX</option><option>CARTAO</option><option>RECEPCAO</option></select><button>Autorizar</button></form>{% else %}<span class="badge">Liberado</span>{% endif %}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">Nenhum aluno encontrado.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+
+<section class="panel" style="margin-top:18px">
+  <div class="section-head" style="margin-top:0"><div><span class="badge">Financeiro</span><h2>Pagamentos pendentes</h2><p>Confirme somente depois do pagamento recebido.</p></div></div>
+  <div class="compact-table">
+    <table>
+      <tr><th>Aluno</th><th>Origem</th><th>Valor</th><th>Vencimento</th><th>Confirmar</th><th>Recusar</th></tr>
+      {% for payment in pending_payments %}
+      {% set req = payment.id and service_requests|selectattr('payment_id','equalto',payment.id)|list %}
+      <tr>
+        <td>{{ payment.student.user.name }}<br><span class="meta-chip">{{ payment.student.user.email }}</span></td>
+        <td>{% if req %}Servico: {{ req[0].service.name }}{% else %}Plano: {{ payment.student.plan.name if payment.student.plan else '-' }}{% endif %}</td>
+        <td>R$ {{ payment.amount }}</td>
+        <td>{{ payment.due_date }}</td>
+        <td><form method="post" action="{{ url_for('admin.confirm_pending_payment', payment_id=payment.id) }}" class="toolbar"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><select name="method"><option>DINHEIRO</option><option>PIX</option><option>CARTAO</option><option>RECEPCAO</option></select><button>Confirmar</button></form></td>
+        <td><form method="post" action="{{ url_for('admin.reject_pending_payment', payment_id=payment.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="danger">Recusar</button></form></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">Nenhum pagamento pendente.</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+</section>
+{% endblock %}

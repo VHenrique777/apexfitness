@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Produtos | Apex Fitness{% endblock %}
+{% block content %}
+<style>
+  .product-photo {
+    height:178px;
+    background-position:center;
+  }
+</style>
+<section class="page-hero-pro" style="--hero-image:url('https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=1600&q=80')">
+  <div class="page-hero-inner">
+    <div>
+      <span class="badge">Produtos</span>
+      <h1>Suplementos e itens fitness para sua rotina.</h1>
+      <p>Uma vitrine direta para encontrar produtos de apoio ao treino, com estoque acompanhado pela equipe Apex.</p>
+      <div class="hero-pill-row">
+        <span class="hero-pill">Whey</span>
+        <span class="hero-pill">Creatina</span>
+        <span class="hero-pill">Vitaminas</span>
+        <span class="hero-pill">Barras proteicas</span>
+      </div>
+    </div>
+    <div class="hero-score"><strong>{{ products|length }}</strong><span>produtos no catalogo</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div>
+      <span class="badge">Catalogo Apex</span>
+      <h2>Escolha produtos que acompanham seu treino.</h2>
+      <p>Itens selecionados para conveniencia, reposicao e suporte nutricional no dia a dia.</p>
+    </div>
+    <a class="btn ghost" href="{{ url_for('public.contact') }}">Consultar disponibilidade</a>
+  </div>
+  <div class="grid">
+    {% for p in products %}
+    {% set product_key = (p.name ~ ' ' ~ p.category)|lower %}
+    {% set product_photo = 'https://images.unsplash.com/photo-1775199603078-e1d964929e10?auto=format&fit=crop&w=800&q=80' %}
+    {% if 'whey' in product_key %}
+      {% set product_photo = 'https://images.unsplash.com/photo-1775199603078-e1d964929e10?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'creatina' in product_key %}
+      {% set product_photo = 'https://images.unsplash.com/photo-1693996045435-af7c48b9cafb?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'pre-treino' in product_key or 'nitro' in product_key %}
+      {% set product_photo = 'https://images.unsplash.com/photo-1704650311981-419f841421cc?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'hiper' in product_key or 'mass' in product_key %}
+      {% set product_photo = 'https://images.unsplash.com/photo-1704650311190-7eeb9c4f6e11?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'vitamin' in product_key %}
+      {% set product_photo = 'https://images.unsplash.com/photo-1701201632697-7ec41bfee65f?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'barra' in product_key %}
+      {% set product_photo = 'https://images.unsplash.com/photo-1742860866012-fc167d8366bf?auto=format&fit=crop&w=800&q=80' %}
+    {% endif %}
+    <article class="card commerce-card" style="--card-image:url('{{ product_photo }}')">
+      <div class="card-photo product-photo"></div>
+      <span class="badge">{{ p.category }}</span>
+      <h3>{{ p.name }}</h3>
+      <p>{{ p.description }}</p>
+      <div class="price-row">
+        <div>
+          <span class="meta-chip">Preco</span>
+          <div class="metric">R$ {{ p.price }}</div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="meta-chip">Estoque {{ p.stock }}</span>
+        <span class="meta-chip">Retirada na academia</span>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cta-band">
+  <div>
+    <span class="badge">Mercado fitness</span>
+    <h2>Precisa de um item especifico?</h2>
+    <p>Entre em contato para verificar estoque, novidades e disponibilidade de produtos.</p>
+  </div>
+  <a class="btn" href="{{ url_for('public.contact') }}">Consultar agora</a>
+</section>
+{% endblock %}

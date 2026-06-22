@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title"><div><span class="badge">SMTP</span><h1>Email do sistema</h1></div></div>
+<form class="panel" method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="grid">
+    <div><label>Servidor SMTP</label><input name="mail_server" value="{{ smtp.mail_server }}" required></div>
+    <div><label>Porta</label><input name="mail_port" type="number" value="{{ smtp.mail_port }}" required></div>
+    <div><label>Usuario/email</label><input name="mail_username" type="email" value="{{ smtp.mail_username }}" required></div>
+    <div><label>Senha do app SMTP</label><input name="mail_password" type="password" placeholder="{{ 'Senha cadastrada' if smtp.has_password else 'Informe a senha' }}"></div>
+    <div><label>Remetente padrao</label><input name="mail_default_sender" value="{{ smtp.mail_default_sender }}" required></div>
+    <div><label>Email para teste</label><input name="test_email" type="email" placeholder="aluno@email.com"></div>
+    <label><input style="width:auto" type="checkbox" name="mail_use_tls" {% if smtp.mail_use_tls %}checked{% endif %}> Usar TLS</label>
+  </div>
+  <div class="toolbar"><button>Salvar SMTP</button></div>
+</form>
+{% endblock %}

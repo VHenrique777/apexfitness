@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title"><div><span class="badge">Dashboard</span><h1>Centro de comando</h1></div><a class="btn" href="{{ url_for('admin.reports', kind='financeiro') }}">PDF financeiro</a></div>
+<div class="grid">
+  <section class="card"><h3>Alunos</h3><div class="metric">{{ students }}</div><p>{{ active_students }} ativos</p></section>
+  <section class="card"><h3>Inadimplentes</h3><div class="metric">{{ delinquent }}</div><p>Bloqueio de check-in automatico</p></section>
+  <section class="card"><h3>Receita</h3><div class="metric">R$ {{ revenue }}</div><p>Vendas e pagamentos</p></section>
+  <section class="card"><h3>Produtos</h3><div class="metric">{{ products }}</div><p>{{ users }} usuarios no sistema</p></section>
+</div>
+<div class="grid" style="margin-top:18px">
+  <section class="panel"><h2>Fluxo de caixa</h2><canvas id="cashChart" height="120"></canvas></section>
+  <section class="panel"><h2>Alertas</h2>{% for p in low_stock %}<p><strong>{{ p.name }}</strong> com {{ p.stock }} unidades.</p>{% else %}<p>Nenhum alerta de estoque.</p>{% endfor %}</section>
+</div>
+<script>new Chart(document.getElementById('cashChart'),{type:'line',data:{labels:['Jan','Fev','Mar','Abr','Mai','Jun'],datasets:[{label:'Faturamento',data:[9000,12000,15000,18000,22000,26000],borderColor:'#E31C1C',backgroundColor:'rgba(227,28,28,.12)',fill:true,tension:.35},{label:'Despesas',data:[4200,5000,6100,7200,8100,9000],borderColor:'#FF6B35',tension:.35}]},options:{plugins:{legend:{display:true}},scales:{y:{beginAtZero:true}}}});</script>
+{% endblock %}
+

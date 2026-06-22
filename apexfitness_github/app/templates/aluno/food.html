@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title">
+  <div>
+    <span class="badge">Nutricionista</span>
+    <h1>Plano alimentar</h1>
+  </div>
+</div>
+
+<div class="grid">
+  {% for p in plans %}
+    <article class="card">
+      <span class="badge">{{ p.created_at.strftime("%d/%m/%Y") }}</span>
+      <h3>{{ p.title }}</h3>
+      {% if p.schedules %}
+        <p>{{ p.schedules }}</p>
+      {% endif %}
+      <div class="panel" style="box-shadow:none; margin-top:14px; padding:14px">
+        {% for line in p.meals.splitlines() %}
+          {% if line %}
+            <p style="margin:0 0 6px">{{ line }}</p>
+          {% else %}
+            <div style="height:8px"></div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% if p.observations %}
+        <p>{{ p.observations }}</p>
+      {% endif %}
+      <div class="toolbar">
+        {% if p.pdf_path %}
+          <a class="btn" href="{{ url_for('aluno.food_pdf', plan_id=p.id) }}" target="_blank">Ver PDF</a>
+          <a class="btn secondary" href="{{ url_for('aluno.food_pdf', plan_id=p.id, download=1) }}">Baixar PDF</a>
+        {% endif %}
+        <form method="post" action="{{ url_for('aluno.delete_food', plan_id=p.id) }}" onsubmit="return confirm('Excluir este plano alimentar?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="danger" type="submit">Excluir plano</button>
+        </form>
+      </div>
+    </article>
+  {% else %}
+    <p>Nenhum plano alimentar publicado.</p>
+  {% endfor %}
+</div>
+{% endblock %}

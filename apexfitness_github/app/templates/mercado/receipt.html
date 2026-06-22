@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block content %}<section class="panel"><h1>Venda #{{ sale.id }}</h1><p>Aluno: {{ sale.student.user.name }}</p><p>Total: R$ {{ sale.total }}</p><p>Pagamento: {{ sale.payment_method }}</p><p>PIX: {{ sale.pix_key or '-' }}</p><p>QR Code PIX: {{ sale.pix_qr_path or '-' }}</p><p>Comprovante PDF: {{ sale.receipt_pdf_path }}</p><table><tr><th>Produto</th><th>Qtd</th><th>Subtotal</th></tr>{% for i in sale.items %}<tr><td>{{ i.product.name }}</td><td>{{ i.quantity }}</td><td>R$ {{ i.subtotal }}</td></tr>{% endfor %}</table></section>{% endblock %}
+

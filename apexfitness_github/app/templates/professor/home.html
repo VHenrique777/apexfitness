@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block content %}<div class="page-title"><div><span class="badge">Professor</span><h1>Area do professor</h1></div></div><div class="grid"><a class="card" href="{{ url_for('professor.create_training') }}"><h3>Criar Treino</h3><p>Ganho de massa, perda de gordura, resistencia ou personalizado.</p></a><a class="card" href="{{ url_for('aluno.account') }}"><h3>Minha Conta</h3><p>Dados do usuario.</p></a><a class="card" href="{{ url_for('auth.logout') }}"><h3>Sair</h3><p>Encerrar sessao.</p></a></div>{% endblock %}
+

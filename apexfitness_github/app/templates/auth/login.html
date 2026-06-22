@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Login | Apex Fitness{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-intro">
+    <div>
+      <span class="badge">Portal Apex</span>
+      <h1>Acesso seguro para alunos e equipe.</h1>
+      <p>Entre para acompanhar rotinas, atendimentos, operacao da academia e ferramentas administrativas.</p>
+    </div>
+    <div class="hero-pill-row">
+      <span class="hero-pill">Alunos</span>
+      <span class="hero-pill">Recepcao</span>
+      <span class="hero-pill">Administracao</span>
+    </div>
+  </div>
+  <section class="panel auth-card">
+    <span class="badge">Entrar</span>
+    <h1>Login</h1>
+    <p>Use seu email e senha cadastrados para acessar o sistema.</p>
+    <form method="post">
+      {{ csrf_token() if false }}
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Email</label>
+      <input name="email" type="email" required>
+      <label>Senha</label>
+      <input name="password" type="password" required>
+      <div class="toolbar">
+        <button>Entrar</button>
+        <a class="btn ghost" href="{{ url_for('auth.forgot_password') }}">Recuperar senha</a>
+        <a class="btn ghost" href="{{ url_for('public.signup') }}">Criar conta</a>
+      </div>
+    </form>
+  </section>
+</section>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+{% set sale_rows = sales if sales is iterable and sales is not string else [] %}
+{% set sale_count = sales|length if sales is iterable and sales is not string else sales %}
+<div class="page-title">
+  <div><span class="badge">Gerente Loja</span><h1>Gestao da loja</h1></div>
+  <a class="btn" href="{{ url_for('admin.reports', kind='estoque') }}">PDF estoque</a>
+</div>
+<div class="grid">
+  <section class="card"><h3>Produtos</h3><div class="metric">{{ products }}</div><p>Itens cadastrados</p></section>
+  <section class="card"><h3>Vendas</h3><div class="metric">{{ sale_count }}</div><p>Vendas registradas</p></section>
+  <section class="card"><h3>Receita</h3><div class="metric">R$ {{ revenue }}</div><p>Total vendido</p></section>
+</div>
+
+<div class="grid" style="margin-top:18px">
+  <a class="card" href="{{ url_for('admin.products') }}"><h3>Estoque</h3><p>Cadastrar produtos e movimentar estoque.</p></a>
+  <section class="panel"><h2>Alertas de estoque</h2>{% for p in low_stock %}<p><strong>{{ p.name }}</strong> com {{ p.stock }} unidades.</p>{% else %}<p>Nenhum alerta de estoque.</p>{% endfor %}</section>
+</div>
+
+<section class="panel" style="margin-top:18px">
+  <div class="page-title" style="margin-bottom:12px">
+    <div><span class="badge">Vendas</span><h2>Vendas registradas</h2></div>
+    <a class="btn" href="{{ url_for('admin.reports', kind='vendas') }}">Criar PDF</a>
+  </div>
+  <table>
+    <tr><th>Venda</th><th>Aluno</th><th>Pagamento</th><th>Status</th><th>Total</th></tr>
+    {% for sale in sale_rows %}
+      <tr><td>#{{ sale.id }}</td><td>{{ sale.student.user.name if sale.student else '-' }}</td><td>{{ sale.payment_method }}</td><td>{{ sale.payment_status }}</td><td>R$ {{ sale.total }}</td></tr>
+    {% else %}
+      <tr><td colspan="5">Nenhuma venda registrada.</td></tr>
+    {% endfor %}
+  </table>
+</section>
+{% endblock %}

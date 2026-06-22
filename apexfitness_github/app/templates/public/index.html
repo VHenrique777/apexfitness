@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Apex Fitness{% endblock %}
+{% block content %}
+<style>
+  .home-hero {
+    min-height:calc(100vh - 155px); display:grid; grid-template-columns:1.02fr .98fr; align-items:center;
+    gap:34px; padding:18px 0 30px;
+  }
+  .hero-copy { max-width:660px; }
+  .hero-copy h1 { margin:14px 0 18px; font-size:clamp(44px,7vw,86px); line-height:.9; }
+  .hero-copy p { max-width:580px; font-size:18px; margin:0; }
+  .hero-actions { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:26px 0; }
+  .hero-stats { display:grid; grid-template-columns:repeat(3,minmax(120px,1fr)); gap:12px; max-width:560px; }
+  .stat-box { border:1px solid var(--line); background:var(--white); border-radius:8px; padding:14px; box-shadow:var(--shadow); }
+  .stat-box strong { display:block; color:var(--primary); font-size:26px; line-height:1; }
+  .stat-box span { color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; }
+  .hero-showcase {
+    min-height:520px; position:relative; overflow:hidden; border-radius:12px; padding:26px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.78)),
+      linear-gradient(90deg, rgba(215,25,32,.58), rgba(0,0,0,.1) 44%, rgba(0,0,0,.52)),
+      url("https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=80");
+    background-size:cover; background-position:center;
+    box-shadow:0 28px 70px rgba(227,28,28,.2);
+    color:#fff;
+  }
+  .hero-showcase:before {
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(120deg, transparent 0 44%, rgba(255,255,255,.15) 44% 45%, transparent 45% 72%, rgba(255,255,255,.12) 72% 73%, transparent 73%);
+  }
+  .showcase-content { position:relative; z-index:1; height:100%; display:flex; flex-direction:column; justify-content:space-between; gap:22px; }
+  .showcase-label { font-size:13px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; opacity:.82; }
+  .showcase-title { font-size:clamp(34px,5vw,60px); line-height:.9; font-weight:900; margin:10px 0; }
+  .showcase-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .showcase-item { min-height:112px; border:1px solid rgba(255,255,255,.18); border-radius:8px; padding:16px; background:rgba(0,0,0,.32); backdrop-filter:blur(10px); }
+  .showcase-item strong { display:block; font-size:22px; margin-bottom:6px; }
+  .showcase-item span { color:rgba(255,255,255,.72); font-size:13px; font-weight:700; }
+  .section-head { display:flex; align-items:end; justify-content:space-between; gap:18px; margin:18px 0; }
+  .section-head h2 { font-size:clamp(26px,4vw,40px); margin:0; }
+  .service-card h3 { font-size:21px; }
+  .service-card p { margin-bottom:0; }
+  .home-gallery { display:grid; grid-template-columns:1.1fr .9fr; gap:18px; margin-top:22px; align-items:stretch; }
+  .gallery-main, .gallery-side { min-height:330px; border-radius:8px; overflow:hidden; border:1px solid var(--line); box-shadow:var(--shadow); background-size:cover; background-position:center; }
+  .gallery-main {
+    background-image:linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.58)), url("https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=80");
+    display:flex; align-items:end; padding:24px; color:#fff;
+  }
+  .gallery-main p { color:rgba(255,255,255,.78); max-width:540px; margin:8px 0 0; }
+  .gallery-side { display:grid; grid-template-rows:1fr 1fr; gap:18px; border:0; box-shadow:none; }
+  .gallery-tile { min-height:156px; border-radius:8px; border:1px solid var(--line); box-shadow:var(--shadow); background-size:cover; background-position:center; }
+  .gallery-tile:first-child { background-image:url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&q=80"); }
+  .gallery-tile:last-child { background-image:url("https://images.unsplash.com/photo-1593079831268-3381b0db4a77?auto=format&fit=crop&w=900&q=80"); }
+  .home-strip {
+    margin-top:22px; display:grid; grid-template-columns:1fr auto; align-items:center; gap:18px;
+    padding:22px; border-radius:8px; background:var(--secondary); color:#fff; overflow:hidden;
+  }
+  .home-strip p { color:rgba(255,255,255,.72); margin:6px 0 0; }
+  @media (max-width:900px) {
+    .home-hero { grid-template-columns:1fr; min-height:auto; padding-top:6px; }
+    .hero-stats { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .hero-showcase { min-height:440px; }
+    .showcase-grid { grid-template-columns:1fr; }
+    .section-head, .home-strip { grid-template-columns:1fr; align-items:start; }
+    .home-gallery { grid-template-columns:1fr; }
+  }
+  @media (max-width:560px) {
+    .hero-stats { grid-template-columns:1fr; }
+  }
+</style>
+
+<section class="home-hero">
+  <div class="hero-copy">
+    <span class="badge">Academia premium em Manaira</span>
+    <h1>Apex Fitness</h1>
+    <p>Treino, saude e performance em uma estrutura completa, com acompanhamento profissional, planos flexiveis, aulas, mercado fitness e acesso digital para alunos.</p>
+    <div class="hero-actions">
+      <a class="btn" href="{{ url_for('public.plans') }}">Ver planos</a>
+      <a class="btn ghost" href="{{ url_for('public.services') }}">Conhecer servicos</a>
+      <a class="btn secondary" href="{{ url_for('auth.login') }}">Portal do aluno</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-box"><strong>360</strong><span>Experiencia completa</span></div>
+      <div class="stat-box"><strong>7+</strong><span>Areas integradas</span></div>
+      <div class="stat-box"><strong>24h</strong><span>Gestao digital</span></div>
+    </div>
+  </div>
+
+  <div class="hero-showcase">
+    <div class="showcase-content">
+      <div>
+        <span class="showcase-label">Forca, saude e performance</span>
+        <div class="showcase-title">Seu treino com padrao profissional.</div>
+      </div>
+      <div class="showcase-grid">
+        <div class="showcase-item"><strong>Musculacao</strong><span>Estrutura para evolucao continua.</span></div>
+        <div class="showcase-item"><strong>Aulas</strong><span>Muay Thai, Pilates, Yoga e mais.</span></div>
+        <div class="showcase-item"><strong>Equipe</strong><span>Personal, nutri e fisio integrados.</span></div>
+        <div class="showcase-item"><strong>Mercado</strong><span>Suplementos e itens fitness no local.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div>
+      <span class="badge">Tudo em um so lugar</span>
+      <h2>Uma academia preparada para rotina real.</h2>
+    </div>
+    <a class="btn ghost" href="{{ url_for('public.contact') }}">Falar com a Apex</a>
+  </div>
+  <div class="grid">
+    <a class="card service-card" href="{{ url_for('public.about') }}"><span class="badge">Estrutura</span><h3>Ambiente premium</h3><p>Espacos organizados para treino, acompanhamento, recepcao e operacao completa.</p></a>
+    <a class="card service-card" href="{{ url_for('public.plans') }}"><span class="badge">Planos</span><h3>Basic, Premium e Elite</h3><p>Opcoes mensal, trimestral e anual para diferentes objetivos e frequencias.</p></a>
+    <a class="card service-card" href="{{ url_for('public.products') }}"><span class="badge">Mercado fitness</span><h3>Suplementos e conveniencia</h3><p>Whey, creatina, vitaminas, barras proteicas e itens essenciais para o treino.</p></a>
+    <a class="card service-card" href="{{ url_for('auth.login') }}"><span class="badge">Digital</span><h3>Portal seguro</h3><p>Acesso para alunos, equipe, recepcao e administradores acompanharem a rotina.</p></a>
+  </div>
+</section>
+
+<section class="home-gallery">
+  <div class="gallery-main">
+    <div>
+      <span class="badge">Ambiente Apex</span>
+      <h2>Espaco pensado para treino forte e rotina organizada.</h2>
+      <p>Visual profissional, areas bem definidas e suporte para quem quer constancia sem complicar o dia.</p>
+    </div>
+  </div>
+  <div class="gallery-side" aria-label="Fotos da estrutura Apex">
+    <div class="gallery-tile"></div>
+    <div class="gallery-tile"></div>
+  </div>
+</section>
+
+<section class="home-strip">
+  <div>
+    <span class="badge">Comece hoje</span>
+    <h2>Escolha seu plano e evolua com acompanhamento.</h2>
+    <p>Planos claros, atendimento presencial e sistema digital para deixar a experiencia mais simples.</p>
+  </div>
+  <a class="btn" href="{{ url_for('public.plans') }}">Comparar planos</a>
+</section>
+{% endblock %}

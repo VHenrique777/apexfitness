@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Recuperar senha | Apex Fitness{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-intro">
+    <div>
+      <span class="badge">Seguranca</span>
+      <h1>Recupere seu acesso com tranquilidade.</h1>
+      <p>Informe o email cadastrado para receber as instrucoes de redefinicao de senha.</p>
+    </div>
+    <div class="hero-pill-row">
+      <span class="hero-pill">Conta protegida</span>
+      <span class="hero-pill">Acesso ao portal</span>
+    </div>
+  </div>
+  <section class="panel auth-card">
+    <span class="badge">Senha</span>
+    <h1>Recuperar senha</h1>
+    <p>Enviaremos as instrucoes para o email informado.</p>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Email</label>
+      <input name="email" type="email" required>
+      <div class="toolbar">
+        <button>Enviar instrucoes</button>
+        <a class="btn ghost" href="{{ url_for('auth.login') }}">Voltar ao login</a>
+      </div>
+    </form>
+  </section>
+</section>
+{% endblock %}

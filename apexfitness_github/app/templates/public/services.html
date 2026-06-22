@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Servicos | Apex Fitness{% endblock %}
+{% block content %}
+<section class="page-hero-pro" style="--hero-image:url('https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&w=1600&q=80')">
+  <div class="page-hero-inner">
+    <div>
+      <span class="badge">Servicos</span>
+      <h1>Aulas e profissionais para acelerar sua evolucao.</h1>
+      <p>Combine treino, acompanhamento e cuidados especializados em uma rotina integrada dentro da Apex Fitness.</p>
+      <div class="hero-pill-row">
+        <span class="hero-pill">Aulas coletivas</span>
+        <span class="hero-pill">Personal trainer</span>
+        <span class="hero-pill">Nutri e fisio</span>
+      </div>
+    </div>
+    <div class="hero-score"><strong>{{ services|length }}</strong><span>servicos disponiveis</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div>
+      <span class="badge">Acompanhamento</span>
+      <h2>Escolha o suporte certo para o seu objetivo.</h2>
+      <p>Servicos organizados para quem quer ganhar performance, melhorar saude, recuperar movimento ou manter constancia.</p>
+    </div>
+    <a class="btn ghost" href="{{ url_for('public.plans') }}">Ver planos</a>
+  </div>
+  <div class="grid">
+    {% for s in services %}
+    {% set service_name = s.name|lower %}
+    {% set service_photo = s.image_url if s.image_url else 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80' %}
+    {% if not s.image_url %}
+    {% if 'muay' in service_name %}
+      {% set service_photo = 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'pilates' in service_name %}
+      {% set service_photo = 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'yoga' in service_name %}
+      {% set service_photo = 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'personal' in service_name %}
+      {% set service_photo = 'https://images.unsplash.com/photo-1571019613576-2b22c76fd955?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'nutricionista' in service_name %}
+      {% set service_photo = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80' %}
+    {% elif 'fisioterapeuta' in service_name %}
+      {% set service_photo = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80' %}
+    {% endif %}
+    {% endif %}
+    <article class="card commerce-card" style="--card-image:url('{{ service_photo }}')">
+      <div class="card-photo"></div>
+      <span class="badge">{{ s.category }}</span>
+      <h3>{{ s.name }}</h3>
+      <p>{{ s.description }}</p>
+      <div class="price-row">
+        <div>
+          <span class="meta-chip">A partir de</span>
+          <div class="metric">R$ {{ s.price }}</div>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="meta-chip">Agenda presencial</span>
+        <span class="meta-chip">Equipe Apex</span>
+      </div>
+      <div class="toolbar">
+        <a class="btn" href="{{ url_for('auth.login') }}">Contratar</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cta-band">
+  <div>
+    <span class="badge">Experiencia completa</span>
+    <h2>Monte uma rotina com treino, saude e acompanhamento.</h2>
+    <p>A equipe Apex ajuda a conectar plano, servico e produto para o seu momento atual.</p>
+  </div>
+  <a class="btn" href="{{ url_for('public.contact') }}">Falar com a equipe</a>
+</section>
+{% endblock %}

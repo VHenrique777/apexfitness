@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Sobre | Apex Fitness{% endblock %}
+{% block content %}
+<section class="page-hero-pro" style="--hero-image:url('https://images.unsplash.com/photo-1558611848-73f7eb4001a1?auto=format&fit=crop&w=1600&q=80')">
+  <div class="page-hero-inner">
+    <div>
+      <span class="badge">Sobre a Apex</span>
+      <h1>Estrutura, cuidado e tecnologia no mesmo lugar.</h1>
+      <p>A Apex Fitness une treino de alta performance, atendimento humano e gestao digital para transformar saude em uma rotina mais simples de acompanhar.</p>
+      <div class="hero-pill-row">
+        <span class="hero-pill">Equipe especializada</span>
+        <span class="hero-pill">Ambiente premium</span>
+        <span class="hero-pill">Operacao integrada</span>
+      </div>
+    </div>
+    <div class="hero-score"><strong>360</strong><span>experiencia completa para alunos e equipe</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div>
+      <span class="badge">Nossa base</span>
+      <h2>Uma academia feita para evolucao consistente.</h2>
+      <p>Cada area da Apex foi pensada para dar suporte a treino, recuperacao, alimentacao e acompanhamento profissional.</p>
+    </div>
+  </div>
+  <div class="grid">
+    <section class="card feature-card"><span class="badge">Historia</span><h3>Performance com atendimento humano</h3><p>A Apex Fitness nasceu para unir estrutura moderna, rotina bem acompanhada e uma operacao clara para alunos e profissionais.</p></section>
+    <section class="card feature-card"><span class="badge">Missao</span><h3>Saude que vira rotina</h3><p>Transformar cuidado fisico em um habito acessivel, mensuravel e acompanhado por profissionais preparados.</p></section>
+    <section class="card feature-card"><span class="badge">Visao</span><h3>Referencia em experiencia fitness</h3><p>Ser reconhecida pela qualidade da estrutura, pela tecnologia aplicada e pela consistencia no atendimento.</p></section>
+    <section class="card feature-card"><span class="badge">Valores</span><h3>Disciplina, respeito e seguranca</h3><p>Atuamos com transparencia, cuidado individual, evolucao continua e responsabilidade em cada atendimento.</p></section>
+  </div>
+</section>
+
+<section class="visual-split">
+  <div class="panel">
+    <div class="section-head" style="margin-top:0">
+      <div>
+        <span class="badge">Estrutura</span>
+        <h2>Tudo conectado para uma experiencia melhor.</h2>
+        <p>Musculacao, Muay Thai, Pilates, Yoga, personal, nutricionista, fisioterapeuta, recepcao, mercado fitness e controle financeiro integrado.</p>
+      </div>
+      <a class="btn" href="{{ url_for('public.services') }}">Ver servicos</a>
+    </div>
+  </div>
+  <aside class="photo-panel" style="--panel-image:url('https://images.unsplash.com/photo-1517963879433-6ad2b056d712?auto=format&fit=crop&w=1000&q=80')">
+    <div class="photo-panel-content">
+      <span class="badge">Treino acompanhado</span>
+      <h2>Rotina clara, espacos funcionais e equipe por perto.</h2>
+      <p>O visual da Apex reforca a proposta de cuidado profissional do primeiro contato ate o acompanhamento diario.</p>
+    </div>
+  </aside>
+</section>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-title"><div><span class="badge">Aluno</span><h1>Portal do aluno</h1></div></div>
+{% if profile and profile.account_status != 'ATIVO' %}
+<section class="panel" style="margin-bottom:18px"><span class="badge">{{ profile.account_status }}</span><h2>Acesso aguardando liberacao</h2><p>Finalize o pagamento na recepcao para liberar entrada e check-in.</p></section>
+{% endif %}
+<div class="grid"><a class="card" href="{{ url_for('aluno.account') }}"><h3>Minha Conta</h3><p>Dados pessoais, plano e pagamentos.</p></a><a class="card" href="{{ url_for('aluno.trainings') }}"><h3>Treinos</h3><p>Planos criados por professor/personal.</p></a>{% if profile and profile.nutritionist_id %}<a class="card" href="{{ url_for('aluno.food') }}"><h3>Plano Alimentar</h3><p>Dieta criada pela nutricionista.</p></a>{% endif %}{% if profile and profile.physiotherapist_id %}<a class="card" href="{{ url_for('aluno.physiotherapy_documents') }}"><h3>Fisioterapia</h3><p>PDFs e planos enviados pelo fisioterapeuta.</p></a>{% endif %}<a class="card" href="{{ url_for('aluno.services') }}"><h3>Servicos</h3><p>Contratados e novas solicitacoes.</p></a><a class="card" href="{{ url_for('aluno.checkin') }}"><h3>Check-in</h3><p>Entrada, saida e historico.</p></a><a class="card" href="{{ url_for('aluno.finance_history') }}"><h3>Historico Financeiro</h3><p>Pagamentos e pendencias.</p></a></div>
+{% endblock %}

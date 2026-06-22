@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Contato | Apex Fitness{% endblock %}
+{% block content %}
+<section class="page-hero-pro" style="--hero-image:url('https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1600&q=80')">
+  <div class="page-hero-inner">
+    <div>
+      <span class="badge">Contato</span>
+      <h1>Fale com a Apex Fitness.</h1>
+      <p>Entre em contato para conhecer planos, tirar duvidas sobre servicos, consultar produtos ou acessar o suporte da equipe.</p>
+      <div class="hero-pill-row">
+        <span class="hero-pill">Atendimento presencial</span>
+        <span class="hero-pill">Planos e matricula</span>
+        <span class="hero-pill">Suporte ao aluno</span>
+      </div>
+    </div>
+    <div class="hero-score"><strong>AX</strong><span>equipe pronta para atender voce</span></div>
+  </div>
+</section>
+
+<section class="contact-panel">
+  <div class="grid">
+    <section class="card feature-card">
+      <span class="badge">Telefone</span>
+      <h3>{{ phone }}</h3>
+      <p>Use este canal para falar com a recepcao, verificar horarios e tirar duvidas rapidas.</p>
+    </section>
+    <section class="card feature-card">
+      <span class="badge">Email</span>
+      <h3>{{ email }}</h3>
+      <p>Ideal para assuntos administrativos, solicitacoes e contatos formais com a equipe.</p>
+    </section>
+    <section class="card feature-card">
+      <span class="badge">Localizacao</span>
+      <h3>Manaira</h3>
+      <p>{{ address }}</p>
+    </section>
+    <section class="card feature-card">
+      <span class="badge">Atendimento</span>
+      <h3>Visite a unidade</h3>
+      <p>Conheca a estrutura, converse com a equipe e escolha o plano mais adequado para sua rotina.</p>
+    </section>
+  </div>
+  <aside class="map-card" style="background:linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.62)), url('https://images.unsplash.com/photo-1554284126-aa88f22d8b74?auto=format&fit=crop&w=1000&q=80'); background-size:cover; background-position:center; color:#fff">
+    <span class="badge">Como chegar</span>
+    <h2>Unidade Apex Fitness</h2>
+    <p style="color:rgba(255,255,255,.78)">{{ address }}</p>
+    <div class="map-lines">
+      <span class="map-line"></span>
+      <span class="map-line"></span>
+      <span class="map-line"></span>
+    </div>
+    <div class="toolbar" style="margin-top:24px">
+      <a class="btn" href="{{ url_for('public.plans') }}">Ver planos</a>
+      <a class="btn ghost" href="{{ url_for('auth.login') }}">Portal do aluno</a>
+    </div>
+  </aside>
+</section>
+
+<section class="cta-band">
+  <div>
+    <span class="badge">Proximo passo</span>
+    <h2>Comece escolhendo um plano ou conversando com a equipe.</h2>
+    <p>A Apex ajuda voce a encaixar treino, servicos e produtos em uma rotina consistente.</p>
+  </div>
+  <a class="btn" href="{{ url_for('public.plans') }}">Comparar planos</a>
+</section>
+{% endblock %}

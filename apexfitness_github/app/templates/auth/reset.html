@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Nova senha | Apex Fitness{% endblock %}
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-intro">
+    <div>
+      <span class="badge">Nova senha</span>
+      <h1>Crie uma senha segura para continuar.</h1>
+      <p>Atualize sua senha e volte a acessar o portal Apex Fitness.</p>
+    </div>
+    <div class="hero-pill-row">
+      <span class="hero-pill">Acesso seguro</span>
+      <span class="hero-pill">Portal Apex</span>
+    </div>
+  </div>
+  <section class="panel auth-card">
+    <span class="badge">Redefinir</span>
+    <h1>Nova senha</h1>
+    <p>Digite uma nova senha para sua conta.</p>
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Senha</label>
+      <input name="password" type="password" required>
+      <div class="toolbar">
+        <button>Salvar senha</button>
+      </div>
+    </form>
+  </section>
+</section>
+{% endblock %}
